@@ -1,0 +1,43 @@
+ $text_blue:#3ca5f6;
+ $root_width_value:1000px;
+
+ a {
+     font-size: 16px;
+     line-height: 1.5;
+     word-break: normal;
+     word-wrap: break-word;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     display: -webkit-box;
+     -webkit-line-clamp: 2;
+     -webkit-box-orient: vertical;
+ }
+
+ a:link {
+     text-decoration: none;
+ }
+
+ .transition {
+     -webkit-transition: all .2s ease-out;
+     -moz-transition: all .2s ease-out;
+     -ms-transition: all .2s ease-out;
+     -o-transition: all .2s ease-out;
+     transition: all .2s ease-out;
+ }
+
+ a {
+     cursor: pointer;
+ }
+
+ a {
+     color: #555;
+ }
+
+ a {
+     background-color: transparent;
+ }
+
+ a:focus,
+ a:hover {
+     color: $text_blue;
+ }
