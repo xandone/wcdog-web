@@ -15,7 +15,7 @@
             </div>
         </div>
         <div :class="isShowComment?'showEdit':'comment-root'">
-            <comments :isShowComment='isShowComment' :jokeId='bean.jokeId'> </comments>
+            <comments :isShowComment='isShowComment' :jokeId='bean.jokeId' v-on:increment="increment"> </comments>
         </div>
     </div>
 </template>
@@ -40,8 +40,12 @@ export default {
         },
         showComment() {
             this.isShowComment = !this.isShowComment;
-
         },
+
+        increment() {
+            console.log(1111111);
+            this.bean.articleCommentCount = this.bean.articleCommentCount + 1;
+        }
 
     }
 }
@@ -124,7 +128,7 @@ item-span {
 }
 
 .showEdit {
-    height: 200px;
+    display: block;
     overflow: hidden;
     transition: all 400ms;
     background: #f9fafc;
@@ -132,7 +136,7 @@ item-span {
 }
 
 .comment-root {
-    height: 0;
+    display: none;
     overflow: hidden;
     transition: all .5s ease;
     background: #f9fafc;

@@ -2,13 +2,27 @@
     <div>
         <div style="padding: 10px;">
             <span >{{comments}}</span>
-            <div v-for='item in commentData'>
-                <span>{{item.commentDetails}}</span>
+            <div v-for='item in commentData' class="comment-info-root">
+                <div class="comment-user-info">
+                    <div>
+                        <img :src="item.commentIcon" alt="" class="comment-ic">
+                        <span>{{item.commentNick}}</span>
+                    </div>
+                    <span class="comment-date">
+            				{{item.commentDate}}
+            	    </span>
+                </div>
+                <span class="conment-detail">{{item.commentDetails}}</span>
             </div>
         </div>
         <div class="Pagination" style="text-align: left;margin-top: 10px;">
             <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-size="10" layout="total, prev, pager, next" :total="count">
             </el-pagination>
+        </div>
+        <div class="repaly-root">
+            <el-input type="textarea" autosize placeholder="请输入内容" v-model="details" style="width: 700px;">
+            </el-input>
+            <el-button @click="addComment" type="primary" size="small" style="margin-left: 10px;">发布</el-button>
         </div>
     </div>
 </template>
@@ -25,6 +39,7 @@ export default {
             row: 10,
             count: 0,
             currentPage: 1,
+            details: '',
         }
     },
     methods: {
@@ -67,6 +82,49 @@ export default {
                 });
 
         },
+        addComment() {
+            this.$axios.post(`/joke/comment/add`, {
+                    jokeId: this.jokeId,
+                    userId: "2",
+                    details: this.details,
+                })
+                .then((response) => {
+                    const result = response.data;
+                    const data = result.data[0];
+                    console.log(result.code);
+                    if (result && result.code === 200) {
+                        this.openSuccess('恭喜，发布成功!');
+                        const tableData = {};
+                        tableData.commentDetails = data.commentDetails;
+                        tableData.commentIcon = data.commentIcon;
+                        tableData.commentNick = data.commentNick;
+                        tableData.commentDate = data.commentDate;
+                        this.commentData.unshift(tableData);
+                        this.count++;
+                        this.details = '';
+                        this.increment();
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        },
+        increment(){
+        	this.$emit('increment');
+        },
+        openToast(msg) {
+            this.$notify.error({
+                title: '错误',
+                message: msg
+            });
+        },
+        openSuccess(msg) {
+            this.$message({
+                message: msg,
+                type: 'success'
+            });
+        },
 
     },
 
@@ -81,3 +139,48 @@ export default {
 
 }
 </script>
+<style lang="scss">
+.comment-info-root {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 10px 0;
+}
+
+.repaly-root {
+    margin-top: 10px;
+}
+
+.comment-ic {
+    width: 30px;
+    height: 30px;
+    border-radius: 10%;
+}
+
+.comment-user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+
+        span {
+            margin-left: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+    }
+}
+
+.comment-date {
+    font-size: 13px;
+    color: #bbb;
+}
+
+.conment-detail {
+    font-size: 14px;
+    color: #333;
+    margin-left: 40px;
+}
+</style>
