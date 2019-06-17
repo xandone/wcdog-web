@@ -3,8 +3,12 @@
         <div class="content">
             <img @click="show(bean)" class="item_img" :src="bean.coverImg" alt="">
             <div class="item-text">
-                <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259">有人整理了42年来的高考照片！</a>
+                <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">有人整理了42年来的高考照片！</a>
                 <span class="author">{{bean.jokeUserNick}}</span>
+                <div style="margin-top: 5px">
+                    <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
+                        {{JOKE_TAGS[i]}}</el-tag>
+                </div>
                 <div class="approval">
                     <div><img src="../assets/approval.png" alt=""><span> {{bean.articleLikeCount}}</span></div>
                     <div @click="showComment"><img src="../assets/comment_ic.png"alt="">
@@ -13,6 +17,7 @@
                 </div>
                 <span class="item-date"> {{bean.postTime}}</span>
             </div>
+            <span class="joke-type">{{bean.category}}</span>
         </div>
         <div :class="isShowComment?'showEdit':'comment-root'">
             <comments :isShowComment='isShowComment' :jokeId='bean.jokeId' v-on:increment="increment"> </comments>
@@ -21,6 +26,9 @@
 </template>
 <script>
 import comments from '@/components/comments'
+
+const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
+
 export default {
     props: {
         bean: {
@@ -31,6 +39,7 @@ export default {
     data() {
         return {
             isShowComment: false,
+            JOKE_TAGS: JOKE_TAGS,
         }
     },
 
@@ -43,7 +52,6 @@ export default {
         },
 
         increment() {
-            console.log(1111111);
             this.bean.articleCommentCount = this.bean.articleCommentCount + 1;
         }
 
@@ -140,5 +148,11 @@ item-span {
     overflow: hidden;
     transition: all .5s ease;
     background: #f9fafc;
+}
+
+.joke-type {
+    width: 40px;
+    font-size: 14px;
+    color: #999;
 }
 </style>

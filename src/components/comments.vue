@@ -9,10 +9,12 @@
                         <span>{{item.commentNick}}</span>
                     </div>
                     <span class="comment-date">
-            				{{item.commentDate}}
-            	    </span>
+                            {{item.commentDate}}
+                    </span>
                 </div>
-                <span class="conment-detail">{{item.commentDetails}}</span>
+                <div class="conment-detail">
+                    <span >{{item.commentDetails}}</span>
+                </div>
             </div>
         </div>
         <div class="Pagination" style="text-align: left;margin-top: 10px;">
@@ -27,10 +29,21 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
     props: {
         isShowComment: false,
         jokeId: { type: String }
+    },
+    computed: {
+        ...mapState([
+            'userInfo'
+        ]),
+        comments() {
+            if (this.isShowComment) {
+                this.getJokeComments();
+            }
+        }
     },
     data() {
         return {
@@ -43,7 +56,6 @@ export default {
         }
     },
     methods: {
-
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
         },
@@ -83,9 +95,17 @@ export default {
 
         },
         addComment() {
+            if (!this.userInfo || this.userInfo.userId === '-1') {
+                alert('请先登录');
+                return;
+            }
+            if (!this.details) {
+                alert('请输入回复内容');
+                return;
+            }
             this.$axios.post(`/joke/comment/add`, {
                     jokeId: this.jokeId,
-                    userId: "2",
+                    userId: this.userInfo.userId,
                     details: this.details,
                 })
                 .then((response) => {
@@ -110,8 +130,8 @@ export default {
                 });
 
         },
-        increment(){
-        	this.$emit('increment');
+        increment() {
+            this.$emit('increment');
         },
         openToast(msg) {
             this.$notify.error({
@@ -127,15 +147,6 @@ export default {
         },
 
     },
-
-    computed: {
-        comments() {
-            if (this.isShowComment) {
-                console.log(12333);
-                this.getJokeComments();
-            }
-        }
-    }
 
 }
 </script>
@@ -181,6 +192,6 @@ export default {
 .conment-detail {
     font-size: 14px;
     color: #333;
-    margin-left: 40px;
+    padding: 10px 40px;
 }
 </style>

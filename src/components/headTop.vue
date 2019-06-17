@@ -14,13 +14,135 @@
                     </div>
                     <span slot="reference">App下载</span>
                 </el-popover>
-                <span>大牛二虎</span>
-                <img class="user-ic" src="https://upload-images.jianshu.io/upload_images/2518499-ac8c6a0db917e181.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">
-             </div>
+                <div class="login" v-if="!isShowUser"><span @click="loginDialogShow = true">登录</span><span>|</span><span>注册</span>
+                </div>
+                <el-dropdown @command="dealCommand" style="font-size: 12px" v-if="isShowUser">
+                    <div class="user-name">
+                        <span>{{userBean.nickname}}</span>
+                        <img class="user-ic" :src="userBean.userIcon" alt="">
+                    </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item command="userCenter">主页</el-dropdown-item>
+                            <el-dropdown-item command="userWrite">写段子</el-dropdown-item>
+                            <el-dropdown-item command="userEdit">编辑</el-dropdown-item>
+                            <el-dropdown-item command="userExit">退出</el-dropdown-item>
+                        </el-dropdown-menu>
+                </el-dropdown>
             </div>
         </div>
+        <el-dialog title="登录" :visible.sync="loginDialogShow" width="20%" :modal-append-to-body='false' class="login-dialog">
+            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                <el-form-item label="用户名" prop="name">
+                    <el-input v-model="ruleForm.name" autocomplete="off" placeholder='用户名'></el-input>
+                </el-form-item>
+                <el-form-item label="密　码" prop="pass">
+                    <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder='密码' show-password></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button class='login-btn' type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <el-dialog title="提示" :visible.sync="exitDialogShow" width="20%" :modal-append-to-body='false'>
+            <span>是否退出登录？</span>
+            <span slot="footer" class="dialog-footer">
+           <el-button @click="exitDialogShow = false">取 消</el-button>
+            <el-button type="primary" @click="exitDialog">确 定</el-button>
+           </span>
+        </el-dialog>
+    </div>
 </template>
 <script>
+import { setStore, getStore, removeStore } from '@/utils/utils'
+import { USER_INFO_KEY } from '@/config/env'
+import { mapState } from 'vuex'
+export default {
+    data() {
+        return {
+            userBean: {},
+            isShowUser: false,
+            loginDialogShow: false,
+            exitDialogShow: false,
+
+            ruleForm: {
+                name: '',
+                pass: ''
+            },
+            rules: {
+                name: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                ],
+                pass: [
+                    { required: true, message: '请输入密码', trigger: 'blur' }
+                ]
+            }
+        }
+    },
+    created() {
+        this.initUserInfo();
+    },
+    methods: {
+        initUserInfo() {
+            this.userBean = JSON.parse(getStore(USER_INFO_KEY));
+            if (this.userBean) {
+                this.isShowUser = !this.isShowUser;
+                this.setStaticInfo(this.userBean);
+            }
+        },
+        dealCommand(command) {
+            if (command == 'userCenter') {} else if (command == 'userWrite') {} else if (command == 'userEdit') {} else if (command == 'userExit') {
+                this.exitDialogShow = true
+            }
+
+        },
+        loginDialog() {
+            this.loginDialogShow = true;
+        },
+        exitDialog() {
+            this.exitDialogShow = false;
+            removeStore(USER_INFO_KEY);
+            this.isShowUser = !this.isShowUser;
+            this.setStaticInfo(null);
+        },
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    this.login();
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        login() {
+            this.$axios.post(`/user/login`, {
+                    name: this.ruleForm.name,
+                    psw: this.ruleForm.pass
+                })
+                .then((response) => {
+                    const user = response.data;
+                    const userBean = user.data[0].userBean;
+                    if (user.code === 200 && userBean) {
+                        this.loginDialogShow = false;
+                        this.userBean = userBean;
+                        this.isShowUser = !this.isShowUser;
+                        setStore(USER_INFO_KEY, userBean);
+                        this.setStaticInfo(userBean);
+                    } else {
+                        alert("登录错误");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
+        setStaticInfo(user) {
+            this.$store.commit('setUserInfo', user);
+        }
+
+    }
+}
 </script>
 <style lang="scss">
 @import "@/common/base.scss";
@@ -83,8 +205,23 @@
     flex-direction: column;
     justify-content: center;
 
-    span:nth-child(1){
+    span:nth-child(1) {
         margin-bottom: 10px;
     }
 }
+
+.user-name {
+    display: flex;
+    align-items: center;
+}
+
+.login {
+    color: $text_blue;
+}
+
+.login-btn {
+    width: 100%;
+}
+
+.login-dialog {}
 </style>
