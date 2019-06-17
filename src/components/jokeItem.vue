@@ -3,14 +3,14 @@
         <div class="content">
             <img @click="show(bean)" class="item_img" :src="bean.coverImg" alt="">
             <div class="item-text">
-                <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">有人整理了42年来的高考照片！</a>
+                <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">{{bean.title}}</a>
                 <span class="author">{{bean.jokeUserNick}}</span>
                 <div style="margin-top: 5px">
                     <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
                         {{JOKE_TAGS[i]}}</el-tag>
                 </div>
                 <div class="approval">
-                    <div><img src="../assets/approval.png" alt=""><span> {{bean.articleLikeCount}}</span></div>
+                    <div><img @click="approvalJoke" src="../assets/approval.png" alt=""><span> {{bean.articleLikeCount}}</span></div>
                     <div @click="showComment"><img src="../assets/comment_ic.png"alt="">
                         <span> {{bean.articleCommentCount}}</span>
                     </div>
@@ -26,6 +26,7 @@
 </template>
 <script>
 import comments from '@/components/comments'
+import { mapState } from 'vuex'
 
 const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
 
@@ -34,6 +35,11 @@ export default {
         bean: {
             type: Object
         }
+    },
+    computed: {
+        ...mapState([
+            'userInfo'
+        ]),
     },
     components: { comments },
     data() {
@@ -53,7 +59,46 @@ export default {
 
         increment() {
             this.bean.articleCommentCount = this.bean.articleCommentCount + 1;
-        }
+        },
+        approvalJoke() {
+            if (!this.userInfo) {
+                alert('请先登录');
+                return;
+            }
+            this.$axios.get(`/joke/joke/thumbs`, {
+                    params: {
+                        jokeId: this.bean.jokeId,
+                        jokeUserId: this.userInfo.userId,
+                    }
+
+                })
+                .then((response) => {
+                    const result = response.data;
+                    const data = result.data;
+                    console.log(result.code);
+                    if (result && result.code === 200) {
+                        this.openSuccess('点赞成功!');
+                        this.bean.articleLikeCount = this.bean.articleLikeCount + 1;
+                    } else {
+                        this.openWarning(result.msg);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        openWarning(msg) {
+            this.$message({
+                message: msg,
+                type: 'warning'
+            });
+        },
+        openSuccess(msg) {
+            this.$message({
+                message: msg,
+                type: 'success'
+            });
+        },
 
     }
 }

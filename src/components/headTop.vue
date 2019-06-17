@@ -18,15 +18,15 @@
                 </div>
                 <el-dropdown @command="dealCommand" style="font-size: 12px" v-if="isShowUser">
                     <div class="user-name">
-                        <span>{{userBean.nickname}}</span>
                         <img class="user-ic" :src="userBean.userIcon" alt="">
+                        <span>{{userBean.nickname}}</span>
                     </div>
-                        <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item command="userCenter">主页</el-dropdown-item>
-                            <el-dropdown-item command="userWrite">写段子</el-dropdown-item>
-                            <el-dropdown-item command="userEdit">编辑</el-dropdown-item>
-                            <el-dropdown-item command="userExit">退出</el-dropdown-item>
-                        </el-dropdown-menu>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="userCenter">主页</el-dropdown-item>
+                        <el-dropdown-item command="userWrite">写段子</el-dropdown-item>
+                        <el-dropdown-item command="userEdit">编辑</el-dropdown-item>
+                        <el-dropdown-item command="userExit">退出</el-dropdown-item>
+                    </el-dropdown-menu>
                 </el-dropdown>
             </div>
         </div>
@@ -90,7 +90,10 @@ export default {
             }
         },
         dealCommand(command) {
-            if (command == 'userCenter') {} else if (command == 'userWrite') {} else if (command == 'userEdit') {} else if (command == 'userExit') {
+            if (command == 'userCenter') {} else if (command == 'userWrite') {
+                let routeData = this.$router.resolve({ path: '/jokeAdd', query: { id: 1 } });
+                window.open(routeData.href, '_blank');
+            } else if (command == 'userEdit') {} else if (command == 'userExit') {
                 this.exitDialogShow = true
             }
 
@@ -213,6 +216,9 @@ export default {
 .user-name {
     display: flex;
     align-items: center;
+    span{
+        margin-left: 5px;
+    }
 }
 
 .login {

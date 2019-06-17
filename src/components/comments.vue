@@ -8,13 +8,13 @@
                         <img :src="item.commentIcon" alt="" class="comment-ic">
                         <span>{{item.commentNick}}</span>
                     </div>
-                    <span class="comment-date">
-                            {{item.commentDate}}
-                    </span>
                 </div>
                 <div class="conment-detail">
                     <span >{{item.commentDetails}}</span>
                 </div>
+                <span class="comment-date">
+                            {{item.commentDate}}
+                </span>
             </div>
         </div>
         <div class="Pagination" style="text-align: left;margin-top: 10px;">
@@ -95,7 +95,7 @@ export default {
 
         },
         addComment() {
-            if (!this.userInfo || this.userInfo.userId === '-1') {
+            if (!this.userInfo) {
                 alert('请先登录');
                 return;
             }
@@ -187,6 +187,7 @@ export default {
 .comment-date {
     font-size: 13px;
     color: #bbb;
+    padding-left: 40px;
 }
 
 .conment-detail {

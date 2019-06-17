@@ -1,5 +1,15 @@
 <template>
     <div class="joke-root">
+        <template>
+            <el-tabs class="tabs" v-model="activeName" @tab-click="handleClick">
+                <el-tab-pane label="全部" name="-1"></el-tab-pane>
+                <el-tab-pane label="经典" name="0"></el-tab-pane>
+                <el-tab-pane label="荤笑话" name="1"></el-tab-pane>
+                <el-tab-pane label="精分" name="2"></el-tab-pane>
+                <el-tab-pane label="脑残" name="3"></el-tab-pane>
+                <el-tab-pane label="冷笑话" name="4"></el-tab-pane>
+            </el-tabs>
+        </template>
         <jokeItem v-for="item in tableData" :bean='item'></jokeItem>
     </div>
 </template>
@@ -16,20 +26,22 @@ export default {
             tableData: [],
             page: 1,
             row: 20,
+            activeName: '-1'
         }
     },
     created() {
 
     },
     mounted() {
-        this.getJokes();
+        this.getJokes('-1');
     },
     methods: {
-        getJokes() {
+        getJokes(tag) {
             this.$axios.get(`/joke/jokelist`, {
                     params: {
                         page: this.page,
-                        row: this.row
+                        row: this.row,
+                        tag: tag,
                     }
                 })
                 .then((response) => {
@@ -68,6 +80,10 @@ export default {
                 });
 
         },
+        handleClick(tab, event) {
+            console.log(this.activeName);
+            this.getJokes(this.activeName);
+        }
 
     }
 }
@@ -76,5 +92,9 @@ export default {
 .joke-root {
     width: 800px;
     background-color: white;
+}
+
+.tabs {
+    padding: 0 10px;
 }
 </style>
