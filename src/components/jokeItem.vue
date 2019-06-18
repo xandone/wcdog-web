@@ -3,11 +3,14 @@
         <div class="content">
             <img @click="show(bean)" class="item_img" :src="bean.coverImg" alt="">
             <div class="item-text">
-                <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">{{bean.title}}</a>
-                <span class="author">{{bean.jokeUserNick}}</span>
-                <div style="margin-top: 5px">
+                <div class="title-tags">
+                    <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">{{bean.title}}</a>
                     <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
                         {{JOKE_TAGS[i]}}</el-tag>
+                </div>
+                <span class="author">{{bean.jokeUserNick}}</span>
+                <div class="joke-content">
+                    <span >{{bean.content}}</span>
                 </div>
                 <div class="approval">
                     <div><img @click="approvalJoke" src="../assets/approval.png" alt=""><span> {{bean.articleLikeCount}}</span></div>
@@ -104,6 +107,8 @@ export default {
 }
 </script>
 <style lang="scss">
+@import "@/common/base.scss";
+
 item-span {
     font-size: 14px;
     color: #bbb;
@@ -120,6 +125,24 @@ item-span {
     height: 130px;
 }
 
+.joke-content {
+    height: 60px;
+    overflow: hidden;
+    font-size: 14px;
+    color: #222;
+    span {
+    }
+}
+
+.title-tags {
+    display: flex;
+    align-items: center;
+
+    a {
+        margin-right: 10px;
+    }
+}
+
 .item-text {
     margin-left: 10px;
     position: relative;
@@ -129,7 +152,8 @@ item-span {
     .author {
         line-height: 20px;
         @extend item-span;
-        color: #555;
+        color: $text_blue;
+        cursor: default;
     }
 }
 

@@ -10,6 +10,16 @@
                 <el-tab-pane label="冷笑话" name="4"></el-tab-pane>
             </el-tabs>
         </template>
+        <div v-if="isShowBanner" class="banner">
+            <el-carousel height="250px">
+                <el-carousel-item v-for="ban in bannerData">
+                    <a :href="ban.articleUrl" target="_blank">
+                        <span class="banner-title">{{ban.title}}</span>
+                        <el-image class="banner-ic" :src="ban.imgUrl" :fit="fit"></el-image>
+                    </a>
+                </el-carousel-item>
+            </el-carousel>
+        </div>
         <jokeItem v-for="item in tableData" :bean='item'></jokeItem>
     </div>
 </template>
@@ -24,9 +34,13 @@ export default {
     data() {
         return {
             tableData: [],
+            bannerData: [],
             page: 1,
             row: 10,
-            activeName: '-1'
+            activeName: '-1',
+            isShowBanner: true,
+            url: 'http://p3.pstatp.com/large/pgc-image/RTiM18B3UX1Uyo',
+            fit: 'cover'
         }
     },
     created() {
@@ -34,6 +48,9 @@ export default {
     },
     mounted() {
         this.getJokes('-1');
+        if (this.isShowBanner) {
+            this.getBanners();
+        }
     },
     methods: {
         getJokes(tag) {
@@ -80,8 +97,38 @@ export default {
                 });
 
         },
+        getBanners() {
+            this.$axios.get(`/banner/list`)
+                .then((response) => {
+                    const banner = response.data;
+                    const data = banner.data;
+                    this.count = banner.total;
+                    this.bannerData = [];
+                    data.forEach(item => {
+                        const bannerData = {};
+                        bannerData.imgUrl = item.imgUrl;
+                        bannerData.upTime = item.upTime;
+                        bannerData.title = item.title;
+                        bannerData.articleUrl = item.articleUrl;
+                        bannerData.articelId = item.articelId;
+                        this.bannerData.push(bannerData);
+                    })
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+
+        },
         handleClick(tab, event) {
+            if (this.activeName === '-1') {
+                this.isShowBanner = true;
+            } else {
+                this.isShowBanner = false;
+            }
             this.getJokes(this.activeName);
+            if (this.isShowBanner) {
+                this.getBanners();
+            }
         }
 
     }
@@ -95,5 +142,29 @@ export default {
 
 .tabs {
     padding: 0 10px;
+}
+
+.banner {
+    padding: 10px;
+    color: #475669;
+
+    .banner-ic {
+        width: 100%;
+        height: 250px;
+    }
+
+    .banner-title {
+        position: absolute;
+        width: 160px;
+        bottom: 10px;
+        right: 10px;
+        color: #eee;
+        font-size: 14px;
+        z-index: 2;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: right;
+    }
 }
 </style>
