@@ -40,8 +40,9 @@ export default {
         return {
             tableData: [],
             page: 1,
-            row: 20,
-            activeName: "0"
+            row: 10,
+            activeName: "0",
+            selfUrl: `/admin/selfJokes`,
         }
     },
     mounted() {
@@ -49,7 +50,7 @@ export default {
     },
     methods: {
         getSelfJokes() {
-            this.$axios.get(`/admin/selfJokes`, {
+            this.$axios.get(this.selfUrl, {
                     params: {
                         page: this.page,
                         row: this.row,
@@ -94,6 +95,17 @@ export default {
         },
         handleClick(tab, event) {
             console.log(this.activeName);
+            switch (this.activeName) {
+                case '0':
+                    this.selfUrl = `/admin/selfJokes`;
+                    break;
+                case '1':
+                    break;
+                case '2':
+                    this.selfUrl = `/admin/thumb`;
+                    break;
+            }
+            this.getSelfJokes();
         }
 
     }

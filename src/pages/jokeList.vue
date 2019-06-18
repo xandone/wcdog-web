@@ -25,7 +25,7 @@ export default {
         return {
             tableData: [],
             page: 1,
-            row: 20,
+            row: 10,
             activeName: '-1'
         }
     },
