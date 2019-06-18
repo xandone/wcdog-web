@@ -1,8 +1,9 @@
 <template>
     <div class="head-root">
         <div class="head-item">
-            <span>WCDOG</span>
-            头部
+            <a href="http://localhost:8082/">
+            <span  class="head-words">WCDOG</span>
+            </a>
             <div class="user-info">
                 <el-popover placement="top-start" width="200" trigger="hover" content="">
                     <div class="app-qr-root">
@@ -16,7 +17,7 @@
                 </el-popover>
                 <div class="login" v-if="!isShowUser"><span @click="loginDialogShow = true">登录</span><span>|</span><span>注册</span>
                 </div>
-                <el-dropdown @command="dealCommand" style="font-size: 12px" v-if="isShowUser">
+                <el-dropdown @command="dealCommand" style="font-size: 12px" v-if="isShowUser" trigger="click">
                     <div class="user-name">
                         <img class="user-ic" :src="userBean.userIcon" alt="">
                         <span>{{userBean.nickname}}</span>
@@ -90,7 +91,9 @@ export default {
             }
         },
         dealCommand(command) {
-            if (command == 'userCenter') {} else if (command == 'userWrite') {
+            if (command == 'userCenter') {
+               this.$router.push('personal');
+            } else if (command == 'userWrite') {
                 let routeData = this.$router.resolve({ path: '/jokeAdd', query: { id: 1 } });
                 window.open(routeData.href, '_blank');
             } else if (command == 'userEdit') {} else if (command == 'userExit') {
@@ -106,6 +109,7 @@ export default {
             removeStore(USER_INFO_KEY);
             this.isShowUser = !this.isShowUser;
             this.setStaticInfo(null);
+            this.$router.push('/')
         },
         submitForm(formName) {
             this.$refs[formName].validate((valid) => {
@@ -142,8 +146,7 @@ export default {
 
         setStaticInfo(user) {
             this.$store.commit('setUserInfo', user);
-        }
-
+        },
     }
 }
 </script>
@@ -156,6 +159,13 @@ export default {
     height: 50px;
     background-color: white;
     z-index: 5;
+}
+
+.head-words {
+    font-weight: bold;
+    font-size: 18px;
+    color: $text_blue;
+    cursor: pointer;
 }
 
 .head-item {
@@ -216,7 +226,8 @@ export default {
 .user-name {
     display: flex;
     align-items: center;
-    span{
+
+    span {
         margin-left: 5px;
     }
 }

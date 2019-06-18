@@ -1,47 +1,59 @@
 <template>
-    <div class="joke-root">
-        <template>
-            <el-tabs class="tabs" v-model="activeName" @tab-click="handleClick">
-                <el-tab-pane label="全部" name="-1"></el-tab-pane>
-                <el-tab-pane label="经典" name="0"></el-tab-pane>
-                <el-tab-pane label="荤笑话" name="1"></el-tab-pane>
-                <el-tab-pane label="精分" name="2"></el-tab-pane>
-                <el-tab-pane label="脑残" name="3"></el-tab-pane>
-                <el-tab-pane label="冷笑话" name="4"></el-tab-pane>
-            </el-tabs>
-        </template>
-        <jokeItem v-for="item in tableData" :bean='item'></jokeItem>
+    <div class="personal-root">
+        <div class="personal-info">
+            <img class="personal-ic" :src="userInfo.userIcon" alt="">
+            <div class="personal-name-root">
+                <span class="personal-name">{{userInfo.nickname}}</span>
+                <span>加快速度更何况是的肯定是客户刚开始当</span>
+            </div>
+            <el-button class="edit" type="primary" plain size="small">编辑个人资料</el-button>
+        </div>
+        <div class="personal-main">
+            <template>
+                <el-tabs class="tabs" v-model="activeName" @tab-click="handleClick">
+                    <el-tab-pane label="我的" name="0"></el-tab-pane>
+                    <el-tab-pane label="回复" name="1"></el-tab-pane>
+                    <el-tab-pane label="点赞" name="2"></el-tab-pane>
+                </el-tabs>
+            </template>
+            <jokeItem v-for="item in tableData" :bean='item'></jokeItem>
+        </div>
     </div>
 </template>
 <script>
+import { mapState } from "vuex"
 import jokeItem from '@/components/jokeItem'
+
 const JOKE_CATEGORY = { "0": "网络", "1": "自创", "2": "听说" };
 const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
+
 export default {
     components: {
         jokeItem,
+    },
+    computed: {
+        ...mapState([
+            'userInfo'
+        ])
     },
     data() {
         return {
             tableData: [],
             page: 1,
             row: 20,
-            activeName: '-1'
+            activeName: "0"
         }
     },
-    created() {
-
-    },
     mounted() {
-        this.getJokes('-1');
+        this.getSelfJokes();
     },
     methods: {
-        getJokes(tag) {
-            this.$axios.get(`/joke/jokelist`, {
+        getSelfJokes() {
+            this.$axios.get(`/admin/selfJokes`, {
                     params: {
                         page: this.page,
                         row: this.row,
-                        tag: tag,
+                        userId: this.userInfo.userId,
                     }
                 })
                 .then((response) => {
@@ -81,19 +93,67 @@ export default {
 
         },
         handleClick(tab, event) {
-            this.getJokes(this.activeName);
+            console.log(this.activeName);
         }
 
     }
+
 }
 </script>
 <style lang='scss'>
-.joke-root {
-    width: 800px;
-    background-color: white;
+@import "@/common/base.scss";
+
+.personal-root {
+    width: $root_width_value;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 55px;
+
+    .personal-ic {
+        width: 100px;
+        height: 100px;
+        border-radius: 5%;
+    }
 }
 
-.tabs {
-    padding: 0 10px;
+.personal-info {
+    display: flex;
+    position: relative;
+    align-items: center;
+    height: 220px;
+    background-color: white;
+    padding: 10px;
+
+    .edit {
+        position: absolute;
+        right: 10px;
+        bottom: 70px;
+    }
+}
+
+.personal-name-root {
+    display: flex;
+    flex-direction: column;
+
+    span {
+        margin-left: 10px;
+        width: 250px;
+        word-break: break-all;
+        white-space: normal;
+    }
+}
+
+.personal-name {
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.personal-main {
+    margin-top: 10px;
+    background-color: white;
+
+    el-tab-pane {
+        font-size: 50px;
+    }
 }
 </style>

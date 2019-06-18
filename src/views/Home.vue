@@ -1,19 +1,17 @@
 <template>
     <div class=" fill">
         <div class="home-root">
-            <router-view></router-view>
+           <jokeList></jokeList>
         </div>
     </div>
 </template>
 <script>
 import jokeList from '@/pages/jokeList'
-import jokeAdd from '@/pages/jokeAdd'
 
 export default {
     name: 'home',
     components: {
         jokeList,
-        jokeAdd
     }
 }
 </script>

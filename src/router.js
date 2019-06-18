@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import jokeList from '@/pages/jokeList'
 import jokeAdd from '@/pages/jokeAdd'
+import personal from '@/pages/personal'
 
 Vue.use(Router)
 
@@ -22,6 +23,11 @@ export default new Router({
             path: '/jokeAdd',
             name: 'jokeAdd',
             component: jokeAdd,
+        },
+        {
+            path: '/personal',
+            name: 'personal',
+            component: personal,
         },
         {
             path: '/about',
