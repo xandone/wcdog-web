@@ -92,7 +92,7 @@ export default {
             rules: {
                 title: [
                     { required: true, message: '请输入段子标题', trigger: 'blur' },
-                    { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+                    { min: 1, max: 50, message: '长度在 1 到 50 个字符', trigger: 'blur' }
                 ],
                 tags: [
                     { type: 'array', required: true, message: '请至少选择一个标签', trigger: 'change' }

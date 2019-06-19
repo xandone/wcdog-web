@@ -92,9 +92,9 @@ export default {
         },
         dealCommand(command) {
             if (command == 'userCenter') {
-               this.$router.push('personal');
+                this.$router.push('personal');
             } else if (command == 'userWrite') {
-                let routeData = this.$router.resolve({ path: '/jokeAdd', query: { id: 1 } });
+                let routeData = this.$router.resolve({ path: '/jokeAdd', query: { jokeId: 12361 } });
                 window.open(routeData.href, '_blank');
             } else if (command == 'userEdit') {} else if (command == 'userExit') {
                 this.exitDialogShow = true

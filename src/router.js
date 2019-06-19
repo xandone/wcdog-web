@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import jokeList from '@/pages/jokeList'
 import jokeAdd from '@/pages/jokeAdd'
 import personal from '@/pages/personal'
+import jokeDetails from '@/pages/jokeDetails'
 
 Vue.use(Router)
 
@@ -28,6 +29,11 @@ export default new Router({
             path: '/personal',
             name: 'personal',
             component: personal,
+        },
+        {
+            path: '/jokeDetails/:jokeId',
+            name: 'jokeDetails',
+            component: jokeDetails,
         },
         {
             path: '/about',

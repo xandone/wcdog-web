@@ -1,10 +1,12 @@
 <template>
     <div class="item-root">
         <div class="content">
-            <img @click="show(bean)" class="item_img" :src="bean.coverImg" alt="">
+            <img  class="item_img" :src="bean.coverImg" alt="">
             <div class="item-text">
                 <div class="title-tags">
-                    <a class="transition joke-a" href="http://t.m.youth.cn/transfer/toutiao/url/3g.youth.cn/rdzx/201906/t20190613_11981448.htm?tt_group_id=6701898860630901259" target="_blank">{{bean.title}}</a>
+                    <a class="transition joke-a" :href="['jokeDetails/'+bean.jokeId]" target="_blank">
+                        <span class="title-text">{{bean.title}}</span>
+                    </a>
                     <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
                         {{JOKE_TAGS[i]}}</el-tag>
                 </div>
@@ -53,9 +55,6 @@ export default {
     },
 
     methods: {
-        show(bean) {
-            alert(bean.coverImg);
-        },
         showComment() {
             this.isShowComment = !this.isShowComment;
         },
@@ -130,8 +129,8 @@ item-span {
     overflow: hidden;
     font-size: 14px;
     color: #222;
-    span {
-    }
+
+    span {}
 }
 
 .title-tags {
@@ -140,6 +139,10 @@ item-span {
 
     a {
         margin-right: 10px;
+    }
+    .title-text{
+        font-size: 16px;
+        font-weight: 600;
     }
 }
 
