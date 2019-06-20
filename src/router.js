@@ -5,6 +5,7 @@ import jokeList from '@/pages/jokeList'
 import jokeAdd from '@/pages/jokeAdd'
 import personal from '@/pages/personal'
 import jokeDetails from '@/pages/jokeDetails'
+import userView from '@/pages/userView'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
             path: '/jokeDetails/:jokeId',
             name: 'jokeDetails',
             component: jokeDetails,
+        },
+        {
+            path: '/userView/:jokeUserId',
+            name: 'userView',
+            component: userView,
         },
         {
             path: '/about',

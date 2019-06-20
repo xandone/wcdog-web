@@ -1,7 +1,7 @@
 <template>
     <div class="item-root">
         <div class="content">
-            <img  class="item_img" :src="bean.coverImg" alt="">
+            <img  class="item_img" :src="bean.coverImg" alt="" v-if="bean.coverImg">
             <div class="item-text">
                 <div class="title-tags">
                     <a class="transition joke-a" :href="['jokeDetails/'+bean.jokeId]" target="_blank">
@@ -10,7 +10,7 @@
                     <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
                         {{JOKE_TAGS[i]}}</el-tag>
                 </div>
-                <span class="author">{{bean.jokeUserNick}}</span>
+                <span class="author" @click="toUserView">{{bean.jokeUserNick}}</span>
                 <div class="joke-content">
                     <span >{{bean.content}}</span>
                 </div>
@@ -25,7 +25,7 @@
             <span class="joke-type">{{bean.category}}</span>
         </div>
         <div :class="isShowComment?'showEdit':'comment-root'">
-            <comments :isShowComment='isShowComment' :jokeId='bean.jokeId' v-on:increment="increment"> </comments>
+            <comments :isShowComment='isShowComment' :jokeId='bean.jokeId' :minRows='1' :maxRows='4' v-on:increment="increment"> </comments>
         </div>
     </div>
 </template>
@@ -61,6 +61,20 @@ export default {
 
         increment() {
             this.bean.articleCommentCount = this.bean.articleCommentCount + 1;
+        },
+        toUserView() {
+            if (this.bean.jokeUserId === this.userInfo.userId) {
+                this.$router.push('/personal');
+            } else {
+                this.$router.push({
+                    path: '/userView',
+                    name: 'userView',
+                    params: {
+                        jokeUserId: this.bean.jokeUserId
+                    }
+                });
+            }
+
         },
         approvalJoke() {
             if (!this.userInfo) {
@@ -140,7 +154,8 @@ item-span {
     a {
         margin-right: 10px;
     }
-    .title-text{
+
+    .title-text {
         font-size: 16px;
         font-weight: 600;
     }
@@ -205,6 +220,7 @@ item-span {
     width: 260px;
     height: 130px;
     overflow: hidden;
+    border-radius: 3%;
 }
 
 .showEdit {

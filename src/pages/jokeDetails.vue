@@ -2,14 +2,18 @@
     <div class="details-root">
         <div class="content-bg">
             <span class="joke-title">{{jokeDetails.title}}</span>
-            <div class="joke-user-info"><span>{{jokeDetails.jokeUserNick}}</span><span>{{jokeDetails.postTime}}</span></div>
+            <div class="joke-user-info">
+                <span @click="toUserView">{{jokeDetails.jokeUserNick}}</span>
+                <span>{{jokeDetails.postTime}}</span>
+            </div>
             <div class="joke-content" v-html="jokeDetails.contentHtml"></div>
-            <comments :isShowComment="true" :jokeId="jokeId" class="details-comment"></comments>
+            <comments :isShowComment="true" :jokeId="jokeId" :minRows='3' :maxRows='6' class="details-comment"></comments>
         </div>
     </div>
 </template>
 <script>
 import comments from '@/components/comments'
+import { mapState } from 'vuex'
 
 const JOKE_CATEGORY = { "0": "网络", "1": "自创", "2": "听说" };
 const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
@@ -25,8 +29,27 @@ export default {
         this.getJokeDetails();
     },
     components: { comments },
+    computed: {
+        ...mapState([
+            'userInfo'
+        ]),
+    },
 
     methods: {
+        toUserView() {
+            if (this.jokeDetails.jokeUserId === this.userInfo.userId) {
+                this.$router.push('/personal');
+            } else {
+                this.$router.push({
+                    path: '/userView',
+                    name: 'userView',
+                    params: {
+                        jokeUserId: this.jokeDetails.jokeUserId
+                    }
+                });
+            }
+
+        },
         getJokeDetails() {
             this.$axios.get(`/joke/jokeDetails`, {
                     params: {
@@ -37,17 +60,7 @@ export default {
                     const joker = response.data;
                     const item = joker.data[0];
                     this.jokeDetails = {};
-                    this.jokeDetails.articleCommentCount = item.articleCommentCount;
-                    this.jokeDetails.articleLikeCount = item.articleLikeCount;
-                    this.jokeDetails.content = item.content;
-                    this.jokeDetails.contentHtml = item.contentHtml;
-                    this.jokeDetails.coverImg = item.coverImg;
-                    this.jokeDetails.jokeId = item.jokeId;
-                    this.jokeDetails.jokeUserIcon = item.jokeUserIcon;
-                    this.jokeDetails.jokeUserId = item.jokeUserId;
-                    this.jokeDetails.jokeUserNick = item.jokeUserNick;
-                    this.jokeDetails.postTime = item.postTime;
-                    this.jokeDetails.title = item.title;
+                    this.jokeDetails = item;
                     if (item.category) {
                         this.jokeDetails.category = JOKE_CATEGORY[item.category];
                     } else {
@@ -58,7 +71,6 @@ export default {
                     } else {
                         this.jokeDetails.tags = ['0'];
                     }
-
 
                 })
                 .catch((error) => {

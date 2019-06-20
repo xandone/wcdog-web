@@ -1,7 +1,7 @@
 <template>
     <div class="head-root">
         <div class="head-item">
-            <a href="http://localhost:8082/">
+            <a href="/">
             <span  class="head-words">WCDOG</span>
             </a>
             <div class="user-info">
@@ -10,7 +10,7 @@
                         <img class="app-qr-ic" src="@/assets/wc_app.jpg" alt="">
                         <div class="app-qr-tip">
                             <span>扫一扫</span>
-                            <span>下载旺财APP</span>
+                            <span>下载"旺财APP"</span>
                         </div>
                     </div>
                     <span slot="reference">App下载</span>
@@ -92,7 +92,7 @@ export default {
         },
         dealCommand(command) {
             if (command == 'userCenter') {
-                this.$router.push('personal');
+                this.$router.push('/personal');
             } else if (command == 'userWrite') {
                 let routeData = this.$router.resolve({ path: '/jokeAdd', query: { jokeId: 12361 } });
                 window.open(routeData.href, '_blank');

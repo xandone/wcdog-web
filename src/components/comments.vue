@@ -22,7 +22,7 @@
             </el-pagination>
         </div>
         <div class="repaly-root">
-            <el-input type="textarea" autosize placeholder="请输入内容" v-model="details" style="width: 700px;">
+            <el-input type="textarea" :autosize="{ minRows: minRows, maxRows: maxRows}" placeholder="请输入内容" v-model="details" style="width: 700px;">
             </el-input>
             <el-button @click="addComment" type="primary" size="small" style="margin-left: 10px;">发布</el-button>
         </div>
@@ -33,7 +33,9 @@ import { mapState } from 'vuex'
 export default {
     props: {
         isShowComment: false,
-        jokeId: { type: String }
+        jokeId: { type: String },
+        minRows:{ type: Number },
+        maxRows:{ type: Number },
     },
     computed: {
         ...mapState([
