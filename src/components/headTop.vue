@@ -4,6 +4,11 @@
             <a href="/">
             <span  class="head-words">WCDOG</span>
             </a>
+            <div class="search-root">
+                <el-input placeholder="请输入关键字" v-model="key" style="width: 100%;" size="small" @keyup.enter.native="searchJokes">
+                    <el-button @click="searchJokes" slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+            </div>
             <div class="user-info">
                 <el-popover placement="top-start" width="200" trigger="hover" content="">
                     <div class="app-qr-root">
@@ -57,6 +62,7 @@
 import { setStore, getStore, removeStore } from '@/utils/utils'
 import { USER_INFO_KEY } from '@/config/env'
 import { mapState } from 'vuex'
+import vueEvent from '@/bus/vueEvent.js'
 export default {
     data() {
         return {
@@ -64,6 +70,7 @@ export default {
             isShowUser: false,
             loginDialogShow: false,
             exitDialogShow: false,
+            key: '',
 
             ruleForm: {
                 name: '',
@@ -147,6 +154,9 @@ export default {
         setStaticInfo(user) {
             this.$store.commit('setUserInfo', user);
         },
+        searchJokes() {
+            vueEvent.$emit('search-key', this.key);
+        }
     }
 }
 </script>
@@ -241,4 +251,9 @@ export default {
 }
 
 .login-dialog {}
+
+.search-root {
+    width: 350px;
+    margin-left: 30px;
+}
 </style>

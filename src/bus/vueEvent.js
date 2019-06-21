@@ -1,5 +1,5 @@
 import Vue from 'vue';
 
-var VueEvent = new Vue();
+var vueEvent = new Vue();
 
-export default VueEvent;
+export default vueEvent;
