@@ -6,6 +6,7 @@ import jokeAdd from '@/pages/jokeAdd'
 import personal from '@/pages/personal'
 import jokeDetails from '@/pages/jokeDetails'
 import userView from '@/pages/userView'
+import searchResult from '@/pages/searchResult'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
             path: '/userView/:jokeUserId',
             name: 'userView',
             component: userView,
+        },
+         {
+            path: '/searchResult/:key',
+            name: 'searchResult',
+            component: searchResult,
         },
         {
             path: '/about',

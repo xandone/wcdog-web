@@ -4,7 +4,7 @@
             <img  class="item_img" :src="bean.coverImg" alt="" v-if="bean.coverImg">
             <div class="item-text">
                 <div class="title-tags">
-                    <a class="transition joke-a" :href="['jokeDetails/'+bean.jokeId]" target="_blank">
+                    <a class="transition joke-a" :href="['/jokeDetails/'+bean.jokeId]" target="_blank">
                         <span class="title-text">{{bean.title}}</span>
                     </a>
                     <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
@@ -15,10 +15,13 @@
                     <span >{{bean.content}}</span>
                 </div>
                 <div class="approval">
-                    <div><img @click="approvalJoke" src="../assets/approval.png" alt=""><span> {{bean.articleLikeCount}}</span></div>
-                    <div @click="showComment"><img src="../assets/comment_ic.png"alt="">
-                        <span> {{bean.articleCommentCount}}</span>
-                    </div>
+                    <span>
+                        <img @click="approvalJoke" src="../assets/approval.png" alt="">
+                         {{bean.articleLikeCount}}
+                    </span>
+                    <span @click="showComment"><img src="../assets/comment_ic.png"alt="">
+                         {{bean.articleCommentCount}}
+                    </span>
                 </div>
                 <span class="item-date"> {{bean.postTime}}</span>
             </div>
@@ -32,8 +35,7 @@
 <script>
 import comments from '@/components/comments'
 import { mapState } from 'vuex'
-
-const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
+import { JOKE_TAGS } from '@/config/env'
 
 export default {
     props: {
@@ -63,7 +65,7 @@ export default {
             this.bean.articleCommentCount = this.bean.articleCommentCount + 1;
         },
         toUserView() {
-            if (this.bean.jokeUserId === this.userInfo.userId) {
+            if (this.userInfo && this.bean.jokeUserId === this.userInfo.userId) {
                 this.$router.push('/personal');
             } else {
                 this.$router.push({
@@ -188,20 +190,18 @@ item-span {
 
     span {
         @extend item-span;
+        display: flex;
+        align-items: center;
     }
 
     img {
         width: 20px;
         height: 20px;
+        margin-right: 4px;
     }
 
-    div {
-        display: flex;
-        align-items: center;
-    }
-
-    div:nth-child(2) {
-        margin-left: 15px;
+    span:nth-child(2) {
+        margin-left: 12px;
     }
 
 }

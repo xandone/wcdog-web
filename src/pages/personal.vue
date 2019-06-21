@@ -2,11 +2,28 @@
     <div class="personal-root">
         <div class="personal-info">
             <img class="personal-ic" :src="userInfo.userIcon" alt="">
-            <div class="personal-name-root">
-                <span class="personal-name">{{userInfo.nickname}}</span>
-                <span class="personal-talk">加快速度更何况是的肯定是客户刚开始当</span>
+            <div>
+                <div class="personal-name-root">
+                    <span class="personal-name">{{userInfo.nickname}}</span>
+                    <div v-if="!isShowEdit">
+                        <span class="personal-talk" v-if="userInfo.talk">
+                    <img src="../assets/talk_ic.png" alt="">{{userInfo.talk}}</span>
+                        <span class="personal-address" v-if="userInfo.address">
+                    <img src="../assets/address_ic.png" alt="">{{userInfo.address}}</span>
+                    </div>
+                </div>
+                <div class="edit-info-root" v-if="isShowEdit">
+                    <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 30}" placeholder="说点什么吧.." v-model="userInfo.talk" maxlength="300" show-word-limit style="width: 350px;">
+                    </el-input>
+                    <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 2}" placeholder="所在城市.." v-model="userInfo.address" maxlength="100" show-word-limit style="width: 350px;" class="edit-info-address">
+                    </el-input>
+                    <div>
+                        <el-button @click="isShowEdit=false" type="primary" size="mini" style="margin-top: 10px; width: 60px;" plain>取消</el-button>
+                        <el-button @click="saveInfo" type="primary" size="mini" style="margin-top: 10px; width: 60px;">保存</el-button>
+                    </div>
+                </div>
             </div>
-            <el-button class="edit" type="primary" plain size="small">编辑个人资料</el-button>
+            <el-button @click="isShowEdit=!isShowEdit" class="edit" type="primary" plain size="small">编辑个人资料</el-button>
         </div>
         <div class="personal-main">
             <template>
@@ -23,9 +40,9 @@
 <script>
 import jokeItem from '@/components/jokeItem'
 import { mapState } from "vuex"
-
-const JOKE_CATEGORY = { "0": "网络", "1": "自创", "2": "听说" };
-const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
+import { setStore } from '@/utils/utils'
+import { USER_INFO_KEY } from '@/config/env'
+import { JOKE_CATEGORY, JOKE_TAGS } from '@/config/env'
 
 export default {
     components: {
@@ -43,6 +60,7 @@ export default {
             row: 10,
             activeName: "0",
             selfUrl: `/user/selfJokes`,
+            isShowEdit: false,
         }
     },
     mounted() {
@@ -107,8 +125,45 @@ export default {
                     break;
             }
             this.getSelfJokes();
-        }
-
+        },
+        saveInfo() {
+            this.$axios.post(`/user/userInfo/modify`, {
+                    userId: this.userInfo.userId,
+                    talk: this.userInfo.talk,
+                    address: this.userInfo.address,
+                })
+                .then((response) => {
+                    const result = response.data;
+                    const bean = result.data[0];
+                    if (bean && result.code === 200) {
+                        setStore(USER_INFO_KEY, bean);
+                        this.setStaticInfo(bean);
+                        this.openSuccess('恭喜，保存成功!');
+                        this.isShowEdit=false;
+                    } else {
+                        this.openToast('保存失败，服务器异常');
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.openToast('服务器异常');
+                });
+        },
+        setStaticInfo(user) {
+            this.$store.commit('setUserInfo', user);
+        },
+        openToast(msg) {
+            this.$notify.error({
+                title: '错误',
+                message: msg
+            });
+        },
+        openSuccess(msg) {
+            this.$message({
+                message: msg,
+                type: 'success'
+            });
+        },
     }
 
 }
@@ -121,6 +176,7 @@ export default {
     height: 100%;
     margin: 0 auto;
     padding-top: 55px;
+    position: relative;
 
     .personal-ic {
         width: 100px;
@@ -133,7 +189,7 @@ export default {
     display: flex;
     position: relative;
     align-items: center;
-    height: 220px;
+    min-height: 220px;
     background-color: white;
     padding: 10px;
 
@@ -159,6 +215,7 @@ export default {
 .personal-name {
     font-weight: 600;
     font-size: 20px;
+    padding: 10px 21px;
 }
 
 .personal-main {
@@ -171,7 +228,35 @@ export default {
 }
 
 .personal-talk {
+    display: flex;
+    align-items: center;
     font-size: 14px;
     color: #666;
+
+    img {
+        margin-right: 5px;
+    }
+}
+
+.personal-address {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    font-size: 14px;
+    color: #666;
+
+    img {
+        margin-right: 6px;
+    }
+}
+
+.edit-info-root {
+    display: flex;
+    flex-direction: column;
+    padding-left: 30px;
+
+    .edit-info-address {
+        margin-top: 8px;
+    }
 }
 </style>

@@ -5,8 +5,8 @@
             <div v-for='item in commentData' class="comment-info-root">
                 <div class="comment-user-info">
                     <div>
-                        <img :src="item.commentIcon" alt="" class="comment-ic">
-                        <span>{{item.commentNick}}</span>
+                        <img :src="item.commentIcon" alt="" class="comment-ic" @click="toUserView(item)">
+                        <span style="cursor: default" @click="toUserView(item)">{{item.commentNick}}</span>
                     </div>
                 </div>
                 <div class="conment-detail">
@@ -34,8 +34,8 @@ export default {
     props: {
         isShowComment: false,
         jokeId: { type: String },
-        minRows:{ type: Number },
-        maxRows:{ type: Number },
+        minRows: { type: Number },
+        maxRows: { type: Number },
     },
     computed: {
         ...mapState([
@@ -58,6 +58,20 @@ export default {
         }
     },
     methods: {
+        toUserView(item) {
+            if (this.userInfo && item.commentUserId === this.userInfo.userId) {
+                this.$router.push('/personal');
+            } else {
+                this.$router.push({
+                    path: '/userView',
+                    name: 'userView',
+                    params: {
+                        jokeUserId: item.commentUserId
+                    }
+                });
+            }
+
+        },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
         },
@@ -125,10 +139,13 @@ export default {
                         this.count++;
                         this.details = '';
                         this.increment();
+                    } else {
+                        this.openToast('发布失败，服务器异常');
                     }
                 })
                 .catch((error) => {
                     console.log(error);
+                    this.openToast('服务器异常');
                 });
 
         },

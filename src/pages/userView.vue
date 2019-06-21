@@ -4,7 +4,10 @@
             <img class="userview-ic" :src="userInfo.userIcon" alt="">
             <div class="userview-name-root">
                 <span class="userview-name">{{userInfo.nickname}}</span>
-                <span class="userview-talk">加快速度更何况是的肯定是客户刚开始当</span>
+                <span class="userview-talk" v-if="userInfo.talk">
+                    <img src="../assets/talk_ic.png" alt="">{{userInfo.talk}}</span>
+                <span class="userview-address" v-if="userInfo.address">
+                    <img src="../assets/address_ic.png" alt="">{{userInfo.address}}</span>
             </div>
         </div>
         <div class="userview-main">
@@ -15,9 +18,7 @@
 </template>
 <script>
 import jokeItem from '@/components/jokeItem'
-
-const JOKE_CATEGORY = { "0": "网络", "1": "自创", "2": "听说" };
-const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
+import { JOKE_CATEGORY,JOKE_TAGS } from '@/config/env'
 
 export default {
     components: {
@@ -142,6 +143,7 @@ export default {
 .userview-name {
     font-weight: 600;
     font-size: 20px;
+    padding: 10px 21px;
 }
 
 .userview-main {
@@ -150,7 +152,7 @@ export default {
 
     .tip1 {
         display: block;
-        font-size: 18px;
+        font-size: 16px;
         padding: 10px 10px;
         border-bottom: 1px solid #f0f0f0;
     }
@@ -158,7 +160,25 @@ export default {
 }
 
 .userview-talk {
+    display: flex;
+    align-items: center;
     font-size: 14px;
     color: #666;
+
+    img {
+        margin-right: 5px;
+    }
+}
+
+.userview-address {
+    display: flex;
+    align-items: center;
+    height: 30px;
+    font-size: 14px;
+    color: #666;
+
+    img {
+        margin-right: 6px;
+    }
 }
 </style>

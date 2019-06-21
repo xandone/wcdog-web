@@ -14,9 +14,8 @@
 <script>
 import comments from '@/components/comments'
 import { mapState } from 'vuex'
+import { JOKE_CATEGORY, JOKE_TAGS } from '@/config/env'
 
-const JOKE_CATEGORY = { "0": "网络", "1": "自创", "2": "听说" };
-const JOKE_TAGS = { "0": "经典", "1": "荤笑话", "2": "精分", "3": "脑残", "4": "冷笑话" };
 export default {
     data() {
         return {
@@ -37,7 +36,7 @@ export default {
 
     methods: {
         toUserView() {
-            if (this.jokeDetails.jokeUserId === this.userInfo.userId) {
+            if (this.userInfo && this.jokeDetails.jokeUserId === this.userInfo.userId) {
                 this.$router.push('/personal');
             } else {
                 this.$router.push({

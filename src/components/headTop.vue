@@ -28,10 +28,15 @@
                         <span>{{userBean.nickname}}</span>
                     </div>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="userCenter">主页</el-dropdown-item>
-                        <el-dropdown-item command="userWrite">写段子</el-dropdown-item>
-                        <el-dropdown-item command="userEdit">编辑</el-dropdown-item>
-                        <el-dropdown-item command="userExit">退出</el-dropdown-item>
+                        <el-dropdown-item command="userCenter">
+                            <span class="center-ic"><img src="../assets/userCenter_ic.png" alt="">主页</span>
+                        </el-dropdown-item>
+                        <el-dropdown-item command="userWrite">
+                            <span class="center-ic"><img src="../assets/userwrite_ic.png" alt="">写段子</span>
+                        </el-dropdown-item>
+                        <el-dropdown-item command="userExit">
+                            <span class="center-ic"><img src="../assets/userExit_ic.png" alt="">退出</span>
+                        </el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -155,6 +160,13 @@ export default {
             this.$store.commit('setUserInfo', user);
         },
         searchJokes() {
+            this.$router.push({
+                path: '/searchResult',
+                name: 'searchResult',
+                params: {
+                    key: this.key
+                }
+            });
             vueEvent.$emit('search-key', this.key);
         }
     }
@@ -255,5 +267,14 @@ export default {
 .search-root {
     width: 350px;
     margin-left: 30px;
+}
+
+.center-ic {
+    display: flex;
+    align-items: center;
+
+    img {
+        margin-right: 5px;
+    }
 }
 </style>
