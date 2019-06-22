@@ -20,11 +20,12 @@
                     </div>
                     <span slot="reference">App下载</span>
                 </el-popover>
-                <div class="login" v-if="!isShowUser"><span @click="loginDialogShow = true">登录</span><span>|</span><span>注册</span>
+                <div class="login" v-if="!isShowUser"><span @click="loginDialog('1')">登录</span><span>|</span>
+                    <span @click="loginDialog('2')">注册</span>
                 </div>
                 <el-dropdown @command="dealCommand" style="font-size: 12px" v-if="isShowUser" trigger="click">
                     <div class="user-name">
-                        <img class="user-ic" :src="userBean.userIcon" alt="">
+                        <img class="user-ic" :src="userBean.userIcon===null?require(`@/assets/wc_app.jpg`):userBean.userIcon" alt="">
                         <span>{{userBean.nickname}}</span>
                     </div>
                     <el-dropdown-menu slot="dropdown">
@@ -41,20 +42,42 @@
                 </el-dropdown>
             </div>
         </div>
-        <el-dialog title="登录" :visible.sync="loginDialogShow" width="20%" :modal-append-to-body='false' class="login-dialog">
-            <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
-                <el-form-item label="用户名" prop="name">
-                    <el-input v-model="ruleForm.name" autocomplete="off" placeholder='用户名'></el-input>
-                </el-form-item>
-                <el-form-item label="密　码" prop="pass">
-                    <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder='密码' show-password></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button class='login-btn' type="primary" @click="submitForm('ruleForm')">登录</el-button>
-                </el-form-item>
-            </el-form>
+        <el-dialog :visible.sync="loginDialogShow" width="25%" :modal-append-to-body='false' class="login-dialog">
+            <template>
+                <el-tabs v-model="loginTabName" type="card">
+                    <el-tab-pane label="登录" name="1">
+                        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                            <el-form-item label="用户名" prop="name">
+                                <el-input v-model="ruleForm.name" autocomplete="off" placeholder='用户名'></el-input>
+                            </el-form-item>
+                            <el-form-item label="密　码" prop="pass">
+                                <el-input type="password" v-model="ruleForm.pass" autocomplete="off" placeholder='密码' show-password></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button class='login-btn' type="primary" @click="submitForm('ruleForm','1')">登录</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-tab-pane>
+                    <el-tab-pane label="注册" name="2">
+                        <el-form :model="ruleFormRegist" status-icon :rules="rules" ref="ruleFormRegist" label-width="80px" class="demo-ruleForm">
+                            <el-form-item label="用户名" prop="name">
+                                <el-input v-model="ruleFormRegist.name" autocomplete="off" placeholder='用户名'></el-input>
+                            </el-form-item>
+                            <el-form-item label="密　码" prop="pass">
+                                <el-input type="password" v-model="ruleFormRegist.pass" autocomplete="off" placeholder='密码' show-password></el-input>
+                            </el-form-item>
+                            <el-form-item label="昵称" prop="nickname">
+                                <el-input v-model="ruleFormRegist.nickname" autocomplete="off" placeholder='昵称'></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button class='login-btn' type="primary" @click="submitForm('ruleFormRegist','2')">注册</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </el-tab-pane>
+                </el-tabs>
+            </template>
         </el-dialog>
-        <el-dialog title="提示" :visible.sync="exitDialogShow" width="20%" :modal-append-to-body='false'>
+        <el-dialog title="提示" :visible.sync="exitDialogShow" width="25%" :modal-append-to-body='false'>
             <span>是否退出登录？</span>
             <span slot="footer" class="dialog-footer">
            <el-button @click="exitDialogShow = false">取 消</el-button>
@@ -76,10 +99,16 @@ export default {
             loginDialogShow: false,
             exitDialogShow: false,
             key: '',
+            loginTabName: '1',
 
             ruleForm: {
                 name: '',
-                pass: ''
+                pass: '',
+            },
+            ruleFormRegist: {
+                name: '',
+                pass: '',
+                nickname: ''
             },
             rules: {
                 name: [
@@ -87,6 +116,9 @@ export default {
                 ],
                 pass: [
                     { required: true, message: '请输入密码', trigger: 'blur' }
+                ],
+                nickname: [
+                    { required: true, message: '请输入昵称', trigger: 'blur' }
                 ]
             }
         }
@@ -113,7 +145,8 @@ export default {
             }
 
         },
-        loginDialog() {
+        loginDialog(name) {
+            this.loginTabName = name;
             this.loginDialogShow = true;
         },
         exitDialog() {
@@ -123,10 +156,16 @@ export default {
             this.setStaticInfo(null);
             this.$router.push('/')
         },
-        submitForm(formName) {
+        submitForm(formName, type) {
+            console.log('login1111====' + type);
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    this.login();
+                    if ('1' === type) {
+                        this.login();
+                    } else if ('2' === type) {
+                        this.regist();
+                    }
+
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -140,15 +179,38 @@ export default {
                 })
                 .then((response) => {
                     const user = response.data;
-                    const userBean = user.data[0].userBean;
-                    if (user.code === 200 && userBean) {
+                    if (user.code === 200) {
+                        const userBean = user.data[0].userBean;
                         this.loginDialogShow = false;
                         this.userBean = userBean;
                         this.isShowUser = !this.isShowUser;
                         setStore(USER_INFO_KEY, userBean);
                         this.setStaticInfo(userBean);
                     } else {
-                        alert("登录错误");
+                        this.openToast(user.msg);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        regist() {
+            this.$axios.post(`/user/regist`, {
+                    name: this.ruleFormRegist.name,
+                    psw: this.ruleFormRegist.pass,
+                    nickname: this.ruleFormRegist.nickname,
+                })
+                .then((response) => {
+                    const user = response.data;
+                    if (user.code === 200) {
+                        const userBean = user.data[0];
+                        this.loginDialogShow = false;
+                        this.userBean = userBean;
+                        this.isShowUser = !this.isShowUser;
+                        setStore(USER_INFO_KEY, userBean);
+                        this.setStaticInfo(userBean);
+                    } else {
+                        this.openToast(user.msg);
                     }
                 })
                 .catch((error) => {
@@ -168,7 +230,19 @@ export default {
                 }
             });
             vueEvent.$emit('search-key', this.key);
-        }
+        },
+        openToast(msg) {
+            this.$notify.error({
+                title: '错误',
+                message: msg
+            });
+        },
+        openSuccess(msg) {
+            this.$message({
+                message: msg,
+                type: 'success'
+            });
+        },
     }
 }
 </script>
@@ -216,6 +290,10 @@ export default {
 
     span:nth-child(2) {
         cursor: default;
+    }
+
+    span:nth-child(3) {
+        cursor: pointer;
     }
 
 }

@@ -5,7 +5,7 @@
             <div v-for='item in commentData' class="comment-info-root">
                 <div class="comment-user-info">
                     <div>
-                        <img :src="item.commentIcon" alt="" class="comment-ic" @click="toUserView(item)">
+                        <img :src="item.commentIcon===null?require(`@/assets/wc_app.jpg`):item.commentIcon" alt="" class="comment-ic" @click="toUserView(item)">
                         <span style="cursor: default" @click="toUserView(item)">{{item.commentNick}}</span>
                     </div>
                 </div>
