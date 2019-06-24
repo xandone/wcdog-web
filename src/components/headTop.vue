@@ -91,6 +91,7 @@ import { setStore, getStore, removeStore } from '@/utils/utils'
 import { USER_INFO_KEY } from '@/config/env'
 import { mapState } from 'vuex'
 import vueEvent from '@/bus/vueEvent.js'
+
 export default {
     data() {
         return {
@@ -100,7 +101,6 @@ export default {
             exitDialogShow: false,
             key: '',
             loginTabName: '1',
-
             ruleForm: {
                 name: '',
                 pass: '',
@@ -143,7 +143,6 @@ export default {
             } else if (command == 'userEdit') {} else if (command == 'userExit') {
                 this.exitDialogShow = true
             }
-
         },
         loginDialog(name) {
             this.loginTabName = name;
@@ -165,7 +164,6 @@ export default {
                     } else if ('2' === type) {
                         this.regist();
                     }
-
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -173,33 +171,11 @@ export default {
             });
         },
         login() {
-            this.$axios.post(`/user/login`, {
-                    name: this.ruleForm.name,
-                    psw: this.ruleForm.pass
-                })
-                .then((response) => {
-                    const user = response.data;
-                    if (user.code === 200) {
-                        const userBean = user.data[0].userBean;
-                        this.loginDialogShow = false;
-                        this.userBean = userBean;
-                        this.isShowUser = !this.isShowUser;
-                        setStore(USER_INFO_KEY, userBean);
-                        this.setStaticInfo(userBean);
-                    } else {
-                        this.openToast(user.msg);
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        regist() {
-            this.$axios.post(`/user/regist`, {
-                    name: this.ruleFormRegist.name,
-                    psw: this.ruleFormRegist.pass,
-                    nickname: this.ruleFormRegist.nickname,
-                })
+            this.$axios.post(`/user/login`,
+                    this.$qs.stringify({
+                        "name": this.ruleForm.name,
+                        "psw": this.ruleForm.pass
+                    }))
                 .then((response) => {
                     const user = response.data;
                     if (user.code === 200) {
@@ -217,7 +193,30 @@ export default {
                     console.log(error);
                 });
         },
-
+        regist() {
+            this.$axios.post(`/user/regist`,
+                    this.$qs.stringify({
+                        'name': this.ruleFormRegist.name,
+                        'psw': this.ruleFormRegist.pass,
+                        'nickname': this.ruleFormRegist.nickname,
+                    }))
+                .then((response) => {
+                    const user = response.data;
+                    if (user.code === 200) {
+                        const userBean = user.data[0];
+                        this.loginDialogShow = false;
+                        this.userBean = userBean;
+                        this.isShowUser = !this.isShowUser;
+                        setStore(USER_INFO_KEY, userBean);
+                        this.setStaticInfo(userBean);
+                    } else {
+                        this.openToast(user.msg);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         setStaticInfo(user) {
             this.$store.commit('setUserInfo', user);
         },
@@ -295,7 +294,6 @@ export default {
     span:nth-child(3) {
         cursor: pointer;
     }
-
 }
 
 .user-ic {

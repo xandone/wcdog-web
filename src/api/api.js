@@ -5,9 +5,16 @@ import axios from 'axios';
 
 import { baseUrl } from '@/config/env'
 
+import Qs from 'qs'
+
+
+axios.defaults.baseURL = baseUrl;
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 /*使用axios插件*/
 Vue.prototype.$axios = axios;
-axios.defaults.baseURL = baseUrl;
+Vue.prototype.$qs = Qs;
+
 export default ({
 
 });
