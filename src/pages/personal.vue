@@ -127,11 +127,13 @@ export default {
             this.getSelfJokes();
         },
         saveInfo() {
-            this.$axios.post(`/user/userInfo/modify`, {
-                    userId: this.userInfo.userId,
-                    talk: this.userInfo.talk,
-                    address: this.userInfo.address,
-                })
+            this.$axios.post(`/user/userInfo/modify`,
+                    this.$qs.stringify({
+                        'userId': this.userInfo.userId,
+                        'talk': this.userInfo.talk,
+                        'address': this.userInfo.address,
+                    }))
+
                 .then((response) => {
                     const result = response.data;
                     const bean = result.data[0];
@@ -139,7 +141,7 @@ export default {
                         setStore(USER_INFO_KEY, bean);
                         this.setStaticInfo(bean);
                         this.openSuccess('恭喜，保存成功!');
-                        this.isShowEdit=false;
+                        this.isShowEdit = false;
                     } else {
                         this.openToast('保存失败，服务器异常');
                     }

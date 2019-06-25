@@ -119,11 +119,13 @@ export default {
                 alert('请输入回复内容');
                 return;
             }
-            this.$axios.post(`/joke/comment/add`, {
-                    jokeId: this.jokeId,
-                    userId: this.userInfo.userId,
-                    details: this.details,
-                })
+            this.$axios.post(`/joke/comment/add`,
+                    this.$qs.stringify({
+                        'jokeId': this.jokeId,
+                        'userId': this.userInfo.userId,
+                        'details': this.details,
+                    }))
+
                 .then((response) => {
                     const result = response.data;
                     const data = result.data[0];
