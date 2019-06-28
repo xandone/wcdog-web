@@ -7,7 +7,6 @@
 </template>
 <script>
 import jokeList from '@/pages/jokeList'
-
 export default {
     name: 'home',
     components: {
@@ -17,7 +16,6 @@ export default {
 </script>
 <style lang="scss">
 @import "@/common/base.scss";
-
 .home-root {
     width: $root_width_value;
     height: 100%;

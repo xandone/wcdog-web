@@ -1,7 +1,7 @@
 <template>
     <div class="userview-root">
         <div class="userview-info">
-            <img class="userview-ic" :src="userInfo.userIcon" alt="">
+            <img class="userview-ic" :src="userInfo.userIcon===null?require(`@/assets/wc_app.jpg`):userInfo.userIcon" alt="">
             <div class="userview-name-root">
                 <span class="userview-name">{{userInfo.nickname}}</span>
                 <span class="userview-talk" v-if="userInfo.talk">
@@ -18,7 +18,7 @@
 </template>
 <script>
 import jokeItem from '@/components/jokeItem'
-import { JOKE_CATEGORY,JOKE_TAGS } from '@/config/env'
+import { JOKE_CATEGORY, JOKE_TAGS } from '@/config/env'
 
 export default {
     components: {

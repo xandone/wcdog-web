@@ -7,8 +7,11 @@
                     <a class="transition joke-a" :href="['/jokeDetails/'+bean.jokeId]" target="_blank">
                         <span class="title-text">{{bean.title}}</span>
                     </a>
-                    <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
-                        {{JOKE_TAGS[i]}}</el-tag>
+                    <div class="joke-tag-el">
+                        <el-tag v-for='i in bean.tags' size='mini' type="success" style="margin-right: 10px">
+                            {{JOKE_TAGS[i]}}
+                        </el-tag>
+                    </div>
                 </div>
                 <span class="author" @click="toUserView">{{bean.jokeUserNick}}</span>
                 <div class="joke-content">
@@ -19,7 +22,7 @@
                         <img @click="approvalJoke" src="../assets/approval.png" alt="">
                          {{bean.articleLikeCount}}
                     </span>
-                    <span @click="showComment"><img src="../assets/comment_ic.png"alt="">
+                    <span @click="showComment"><img src="../assets/comment_ic.png" alt="">
                          {{bean.articleCommentCount}}
                     </span>
                 </div>
@@ -92,8 +95,6 @@ export default {
                 })
                 .then((response) => {
                     const result = response.data;
-                    const data = result.data;
-                    console.log(result.code);
                     if (result && result.code === 200) {
                         this.openSuccess('点赞成功!');
                         this.bean.articleLikeCount = this.bean.articleLikeCount + 1;
@@ -160,6 +161,17 @@ item-span {
     .title-text {
         font-size: 16px;
         font-weight: 600;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        display: inline-block;
+        width: 400px;
+    }
+
+    .joke-tag-el {
+        position: absolute;
+        right: 0px;
+        top: 0px;
     }
 }
 

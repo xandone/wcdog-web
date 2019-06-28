@@ -1,7 +1,7 @@
 <template>
     <div class="personal-root">
         <div class="personal-info">
-            <img class="personal-ic" :src="userInfo.userIcon" alt="">
+            <img class="personal-ic" :src="userInfo.userIcon===null?require(`@/assets/wc_app.jpg`):userInfo.userIcon" alt="">
             <div>
                 <div class="personal-name-root">
                     <span class="personal-name">{{userInfo.nickname}}</span>
