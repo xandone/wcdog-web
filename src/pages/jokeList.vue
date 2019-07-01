@@ -143,6 +143,7 @@ export default {
 <style lang='scss'>
 .joke-root {
     width: 800px;
+    height: 100%;
     background-color: white;
 
     .tip1 {
