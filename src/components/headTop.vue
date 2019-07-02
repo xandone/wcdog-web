@@ -10,7 +10,7 @@
                 </el-input>
             </div>
             <div class="user-info">
-                <el-popover placement="top-start" width="200" trigger="hover" content="">
+                <el-popover placement="bottom-start" width="200" trigger="hover" content="">
                     <div class="app-qr-root">
                         <img class="app-qr-ic" src="@/assets/wc_app.jpg" alt="">
                         <div class="app-qr-tip">

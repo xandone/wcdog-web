@@ -2,19 +2,32 @@
     <div>
         <div class="plank-text">
             <span>~公告~</span>
-            <span>fgdfgdf gdf的非官方大哥发的豆腐干豆腐鬼地方个鬼地方个的非官方的天</span>
+            <span>{{lastPlank.content}}</span>
+            <span class="plank-time" style="font-size: 12px;">{{lastPlank.sendTimeStr}}</span>
         </div>
         <div class="plank-msg">
             <div class="plank-send">
-                <el-input type="text" placeholder="请输入内容" v-model="myTalk" maxlength="25" show-word-limit size="small" />
+                <el-input type="textarea" placeholder="刷个存在感吧.." :autosize="{ minRows: 1, maxRows: 2}" v-model="myTalk" maxlength="30" show-word-limit size="small" />
                 <el-button @click="addTalk" style="margin-top: 10px" type="primary" size="mini">发送</el-button>
             </div>
             <div class="plank-item" v-for="item in talkData">
                 <div class="plank-user">
-                    <img class="plank-user-ic" :src="item.userIcon===null?require(`@/assets/wc_app.jpg`):item.userIcon" alt="">
+                    <el-popover placement="bottom-start" width="200" trigger="hover" content="">
+                        <img slot="reference" @click="toUserView(item)" class="plank-user-ic" :src="item.userIcon===null?require(`@/assets/wc_app.jpg`):item.userIcon" alt="">
+                        <div class="talk-qr-root">
+                            <img class="talk-qr-ic" :src="item.userIcon===null?require(`@/assets/wc_app.jpg`):item.userIcon" alt="">
+                            <div class="talk-qr-tip">
+                                <span>{{item.userNick}}</span>
+                                <span>{{item.talk}}</span>
+                            </div>
+                        </div>
+                    </el-popover>
                     <span class="plank-user-nick">{{item.userNick}}</span>
                 </div>
-                <span class="plank-user-talk">{{item.talk}}</span>
+                <div class="plank-user-talk-root">
+                    <span class="plank-user-talk">{{item.talk}}</span>
+                    <span class="plank-talk_time">{{item.sendTimeStr}}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -28,17 +41,37 @@ export default {
         ])
     },
     mounted() {
+        this.getLastPlank();
         this.getTalkList();
     },
     data() {
         return {
             myTalk: '',
-            talkData: []
+            talkData: [],
+            lastPlank: {}
         }
     },
     methods: {
+        getLastPlank() {
+            this.$axios.get(`/plank/planktalk/lastplank`)
+                .then((response) => {
+                    const result = response.data;
+                    const data = result.data[0];
+                    this.lastPlank.content = data.content;
+                    this.lastPlank.sendTimeStr = data.sendTimeStr;
+                })
+                .catch((error) => {
+                    this.lastPlank.content = "暂无公告";
+                    console.log(error);
+                });
+
+        },
         getTalkList() {
-            this.$axios.get(`/plank/talkList`)
+            this.$axios.get(`/plank/talkList`, {
+                    params: {
+                        size: 6
+                    }
+                })
                 .then((response) => {
                     const result = response.data;
                     const data = result.data;
@@ -50,6 +83,7 @@ export default {
                         talkItem.userId = item.userId;
                         talkItem.userNick = item.userNick;
                         talkItem.sendTime = item.sendTime;
+                        talkItem.sendTimeStr = item.sendTimeStr;
                         this.talkData.push(talkItem);
                     })
                 })
@@ -83,12 +117,30 @@ export default {
                         tableData.userNick = data.userNick;
                         tableData.talk = data.talk;
                         this.talkData.unshift(tableData)
+                        if (this.talkData.length > 6) {
+                            this.talkData.pop();
+                        }
                         this.myTalk = '';
                     }
                 })
                 .catch((error) => {
                     console.log(error);
                 });
+
+        },
+        toUserView(item) {
+            console.log(item);
+            if (this.userInfo && item.userId === this.userInfo.userId) {
+                this.$router.push('/personal');
+            } else {
+                this.$router.push({
+                    path: '/userView',
+                    name: 'userView',
+                    params: {
+                        jokeUserId: item.userId
+                    }
+                });
+            }
 
         },
         openToast(msg) {
@@ -122,13 +174,19 @@ export default {
     span {
         font-size: 16px;
         color: #666;
-        display: inline-block;
+        display: block;
     }
 
     span:nth-child(2) {
         margin-top: 20px;
         font-size: 14px;
     }
+}
+
+.plank-time {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
 }
 
 .plank-msg {
@@ -151,7 +209,7 @@ export default {
 .plank-user {
     display: flex;
     flex-direction: column;
-    justify-content:center;
+    justify-content: center;
 }
 
 .plank-user-ic {
@@ -171,20 +229,57 @@ export default {
     display: inline-block;
 }
 
+.plank-user-talk-root {
+    display: flex;
+    flex-direction: column;
+}
+
 .plank-user-talk {
-    font-size: 13px;
+    font-size: 12px;
     color: #999;
     width: 150px;
     word-break: break-all;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
     overflow: hidden;
+    -webkit-line-clamp: 2;
 }
 
 .plank-send {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+}
+
+.plank-talk_time {
+    display: block;
+    width: 100%;
+    text-align: right;
+    font-size: 12px;
+    color: #ccc;
+    transform: scale(0.8);
+}
+
+.talk-qr-root {
+    display: flex;
+}
+
+.talk-qr-ic {
+    width: 80px;
+    height: 80px;
+    border-radius: 6%;
+}
+
+.talk-qr-tip {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+    font-size: 12px;
+
+    span:nth-child(1) {
+        margin-bottom: 10px;
+        color: $text_blue;
+    }
 }
 </style>

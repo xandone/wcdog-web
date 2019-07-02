@@ -5,6 +5,8 @@
 - [x] 发帖
 - [x] 回复/点赞
 - [x] 搜索
+- [x] 公告面板
+- [x] 发一条说说
 - [x] 个人中心
 - [ ] 其他
 
@@ -25,6 +27,7 @@
 │   │   ├── headTop.vue                          // 头部
 │   │   ├── comments.vue                         // 评论Item组件
 │   │   ├── jokeItem.vue                         // 列表信息组件
+│   │   ├── plank.vue                            // 公告面板组件
 │   ├── config                                   // 全局配置
 │   │   ├── env.js                               // url、常量等
 │   ├── page
