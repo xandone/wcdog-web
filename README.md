@@ -1,5 +1,19 @@
 # wcdog-web
 
+### 新闻类web前端项目 (基于Vue)
+这是一套简易完整的项目，包含前端、后端、移动端三端应用。
+
+### 介绍
+#### 1.后台源码
+SSM(Spring+SpringMVC+Mybatis)<br/>
+戳这里[后台源码(Android)](https://github.com/xandone/wcdog)<br/>
+#### 2.移动端app(Android) 
+MVP+Material+retrofit2+Rx..<br/>
+戳这里[移动端app(Android)](https://github.com/xandone/wcdog-app)<br/>
+#### 3.后台管理系统
+vue+vuex+vue Router+element<br/>
+戳这里[后台管理系统](https://github.com/xandone/wcdog-manager)
+
 ### 功能说明
 - [x] 登录/注册
 - [x] 发帖
@@ -39,7 +53,9 @@
 │   │   ├── userView.vue                         // 查看他人主页
 │   │   |                         
 │   ├── utils
-│   │   ├── utils.js                             // 公共方法       
+│   │   ├── utils.js                             // 公共方法  
+│   ├── views
+│   │   ├── home.vue                             // 主页        
 │   ├── store                                    // 全局store
 │   ├── App.vue                                  // 页面入口
 │   └── main.js                                  // 程序入口
