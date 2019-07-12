@@ -21,14 +21,17 @@
             </el-carousel>
         </div>
         <jokeItem v-for="item in tableData" :bean='item'></jokeItem>
+        <more v-on:loadMore="loadMore" :showInfo='showInfo'></more>
     </div>
 </template>
 <script>
 import jokeItem from '@/components/jokeItem'
-import { JOKE_CATEGORY,JOKE_TAGS } from '@/config/env'
+import more from '@/components/more'
+import { JOKE_CATEGORY, JOKE_TAGS } from '@/config/env'
 export default {
     components: {
         jokeItem,
+        more
     },
     data() {
         return {
@@ -40,6 +43,7 @@ export default {
             activeName: '-1',
             isShowBanner: true,
             fit: 'cover',
+            showInfo: "点击加载更多",
         }
     },
     created() {
@@ -54,6 +58,7 @@ export default {
     },
     methods: {
         getJokes(tag) {
+            this.showInfo = "加载中..";
             this.$axios.get(`/joke/jokelist`, {
                     params: {
                         page: this.page,
@@ -64,7 +69,12 @@ export default {
                 .then((response) => {
                     const joker = response.data;
                     const data = joker.data;
-                    this.tableData = [];
+                    // this.tableData = [];
+                    if (data.length < this.row) {
+                        this.showInfo = "没有数据了~"
+                    } else {
+                        this.showInfo = "点击加载更多"
+                    }
                     data.forEach(item => {
                         const tableData = {};
                         tableData.articleCommentCount = item.articleCommentCount;
@@ -125,10 +135,16 @@ export default {
             } else {
                 this.isShowBanner = false;
             }
+            this.tableData = [];
+            this.page = 1;
             this.getJokes(this.activeName);
             if (this.isShowBanner) {
                 this.getBanners();
             }
+        },
+        loadMore() {
+            this.page++;
+            this.getJokes(this.activeName);
         },
         openToast(msg) {
             this.$notify.error({

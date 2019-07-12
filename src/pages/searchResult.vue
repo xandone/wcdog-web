@@ -82,7 +82,7 @@ export default {
                         })
                         window.scrollTo(0, 0);
                     } else {
-                        openToast(joker.msg);
+                        this.openToast(joker.msg);
                     }
 
                 })

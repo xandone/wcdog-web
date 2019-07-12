@@ -128,10 +128,8 @@ export default {
 
                 .then((response) => {
                     const result = response.data;
-                    const data = result.data[0];
-                    console.log(result.code);
                     if (result && result.code === 200) {
-                        this.openSuccess('恭喜，发布成功!');
+                        const data = result.data[0];
                         const tableData = {};
                         tableData.commentDetails = data.commentDetails;
                         tableData.commentIcon = data.commentIcon;
@@ -141,6 +139,9 @@ export default {
                         this.count++;
                         this.details = '';
                         this.increment();
+                        this.openSuccess('恭喜，发布成功!');
+                    } else if (result.code === 201) {
+                         this.openToast('发布失败，您处于禁言状态');
                     } else {
                         this.openToast('发布失败，服务器异常');
                     }

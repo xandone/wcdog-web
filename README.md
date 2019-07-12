@@ -42,6 +42,7 @@ vue+vuex+vue Router+element<br/>
 │   │   ├── comments.vue                         // 评论Item组件
 │   │   ├── jokeItem.vue                         // 列表信息组件
 │   │   ├── plank.vue                            // 公告面板组件
+│   │   ├── more.vue                             // 点击加载更多
 │   ├── config                                   // 全局配置
 │   │   ├── env.js                               // url、常量等
 │   ├── page

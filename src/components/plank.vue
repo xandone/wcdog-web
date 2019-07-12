@@ -108,19 +108,24 @@ export default {
                     }))
                 .then((response) => {
                     const result = response.data;
-                    const data = result.data[0];
-                    console.log(result.code);
                     if (result && result.code === 200) {
                         this.openSuccess('恭喜，发表成功!');
+                        const data = result.data[0];
                         let tableData = {};
                         tableData.userIcon = data.userIcon;
                         tableData.userNick = data.userNick;
                         tableData.talk = data.talk;
+                        tableData.sendTimeStr = '刚刚';
+                        tableData.userId = data.userId;
                         this.talkData.unshift(tableData)
                         if (this.talkData.length > 6) {
                             this.talkData.pop();
                         }
                         this.myTalk = '';
+                    } else if (result.code === 201) {
+                        this.openToast('发布失败，您处于禁言状态');
+                    } else {
+                        this.openToast('发布失败，服务器异常');
                     }
                 })
                 .catch((error) => {

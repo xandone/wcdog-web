@@ -47,17 +47,13 @@
     </div>
 </template>
 <script>
-import headTop from '@/components/headTop.vue'
 import E from 'wangeditor'
 import { baseUrl, baseImgPath } from '@/config/env'
 import { mapState } from 'vuex'
-import { getStore } from '@/utils/utils.js'
-import { USER_INFO_KEY } from '@/config/env'
 
 export default {
     name: 'editor',
     components: {
-        headTop,
     },
     computed: {
         ...mapState([
@@ -144,11 +140,13 @@ export default {
                 })
                 .then((response) => {
                     const result = response.data;
-                    const data = result.data;
-                    console.log(result.code);
                     if (result && result.code === 200) {
-                        this.openSuccess('恭喜，发表成功!');
                         this.resetForm();
+                        this.openSuccess('恭喜，发表成功!');
+                    } else if (result.code === 201) {
+                        this.openToast('发布失败，您处于禁言状态');
+                    } else {
+                        this.openToast('发布失败，服务器异常');
                     }
                 })
                 .catch((error) => {
