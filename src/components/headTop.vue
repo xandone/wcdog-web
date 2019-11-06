@@ -221,6 +221,10 @@ export default {
             this.$store.commit('setUserInfo', user);
         },
         searchJokes() {
+            if (!this.key) {
+                alert("请输入搜索关键字");
+                return;
+            }
             this.$router.push({
                 path: '/searchResult',
                 name: 'searchResult',

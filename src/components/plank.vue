@@ -69,7 +69,7 @@ export default {
         getTalkList() {
             this.$axios.get(`/plank/talkList`, {
                     params: {
-                        size: 6
+                        size: 5
                     }
                 })
                 .then((response) => {
@@ -118,7 +118,7 @@ export default {
                         tableData.sendTimeStr = '刚刚';
                         tableData.userId = data.userId;
                         this.talkData.unshift(tableData)
-                        if (this.talkData.length > 6) {
+                        if (this.talkData.length > 5) {
                             this.talkData.pop();
                         }
                         this.myTalk = '';
@@ -169,7 +169,7 @@ export default {
 
 .plank-text {
     width: 200px;
-    height: 200px;
+    height: 150px;
     background-color: white;
     margin-left: 10px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -196,8 +196,8 @@ export default {
 
 .plank-msg {
     width: 200px;
-    height: 500px;
-    top: 290px;
+    height: 400px;
+    top: 230px;
     background-color: white;
     margin-left: 10px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
